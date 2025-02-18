@@ -1,0 +1,14 @@
+-lib haxe-strings 
+-lib tink_json 
+-lib tink_priority 
+-lib tink_typecrawler 
+-lib tink_syntaxhub 
+-lib tink_macro 
+-lib tink_core 
+-lib uuid 
+-lib hscript 
+-cp src extraParams.hxml
+-main test.HelpersLibPathTest 
+--interp
+
+

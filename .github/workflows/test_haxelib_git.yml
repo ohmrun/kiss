@@ -1,0 +1,36 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test_haxelib_git:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest]
+        test-target:
+          # HAXE TARGETS
+          # - cs
+          - interp
+    runs-on: ${{ matrix.os }}
+    env:
+      CI_OS_NAME: ${{ matrix.os }}
+    steps:
+      - name: Apt Install Haxe & Neko
+        uses: tecolicom/actions-use-apt-tools@v1
+        with:
+          tools: neko haxe
+      - name: Cache Haxe dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.haxelib
+          key: haxe-${{runner.os}}-lix-${{hashFiles('*.hxml','haxelib.json')}}
+          restore-keys: haxe-${{runner.os}}-haxelib.local-     
+      - name: Initialize Local Haxelib Repo
+        run: haxelib newrepo
+      - name: Install Kiss as Git dependency
+        run: haxelib git kiss https://github.com/kiss-lang/kiss main
+      # # - name: Install Kiss as Git dependency
+      # # haxelib git kiss https://github.com/ohmrun/kiss develop
+      - name: Build And Run Test
+        run: haxe build-scripts/interp/haxelib_git_dependency_support.hxml
